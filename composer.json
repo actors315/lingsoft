@@ -1,0 +1,26 @@
+{
+  "name": "lingsoft/lingyin",
+  "description": "LingyinPHP 框架核心",
+  "type": "ling-extension",
+  "license": "Apache License 2.0",
+  "keywords": [
+    "ling",
+    "lingyin"
+  ],
+  "homepage": "https://lingyin99.com",
+  "authors": [
+    {
+      "name": "actors315",
+      "email": "xie.hj@lingyin99.cn"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "lingyin\\": "core/"
+    }
+  }
+}
