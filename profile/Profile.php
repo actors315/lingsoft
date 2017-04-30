@@ -7,8 +7,6 @@
  */
 
 namespace lingyin\profile;
-use lingyin\profile\drivers\Xhprof;
-use lingyin\profile\drivers\Uprofiler;
 
 /**
  * xhprof性能分析
@@ -58,6 +56,8 @@ class Profile
 
     private static $_driver = null;
 
+    private static $_ip = null;
+
     /**
      * 开始分析
      *
@@ -93,15 +93,15 @@ class Profile
      */
     public static function stop()
     {
-
         if (!self::$_started) {
             return;
         }
+
         $data = [
             'request_id' => uniqid() . '-' . rand(1000, 9999),
             'time' => time(),
             'group_url' => self::getGroupUrl(),
-            'ip' => yii::$app->request->getUserIp(),
+            'ip' => self::getUserIp(),
             'exec_time' => round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 6),
             'site' => defined('PHP_PROFILE_SITE') ? PHP_PROFILE_SITE : self::SITE,
             'profile' => self::$_driver->stop(),
@@ -109,6 +109,7 @@ class Profile
                 'SERVER' => $_SERVER,
             ],
         ];
+
         self::save($data);
 
         return $data;
@@ -141,6 +142,36 @@ class Profile
     }
 
     /**
+     * 获取用户当前IP
+     *
+     * @param bool $ip2long
+     * @return mixed
+     */
+    private static function getUserIp($ip2long = false)
+    {
+        $index = $ip2long ? 1 : 0;
+
+        if (null !== self::$_ip) {
+            return self::$_ip[$index];
+        } elseif (isset($_SERVER['HTTP_TRUE_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_TRUE_CLIENT_IP'];
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        } else {
+            $ip = null;
+        }
+
+        if ($ip2long = ip2long($ip)) {
+            self::$_ip = [$ip, sprintf('%u', $ip2long)];
+        } else {
+            self::$_ip = ['0.0.0.0', 0];
+        }
+
+        return self::$_ip[$index];
+
+    }
+
+    /**
      * 保存性能数据
      *
      * @param array $data
@@ -149,11 +180,10 @@ class Profile
     {
         if (defined('PHP_PROFILE_OUTPUT')) {
             $path = PHP_PROFILE_OUTPUT;
-        } elseif (YII_DEBUG) {
-            $path = __DIR__ . '/../runtime/logs/profile';
         } else {
             $path = dirname(ini_get('error_log'));
         }
+
         if (!is_dir($path)) {
             mkdir($path, 0770, true);
         }
@@ -168,13 +198,14 @@ class Profile
     }
 
     /**
-     * 开发环境下保存性能数据
+     * 通过接口实时记录性能数据
+     * 你可以通过定义常量`PHP_PROFILE_DEV`开启。在线环境强烈建议不要这么做,
      *
      * @param array $data
      */
     private static function saveByDev(array $data)
     {
-        if (false) {//YII_DEBUG
+        if (!PHP_PROFILE_DEV) {
             return;
         } elseif (defined('PHP_PROFILE_API')) {
             $url = PHP_PROFILE_API;
@@ -203,7 +234,8 @@ class Profile
             return false;
         }
 
-        self::$_driver = new $driver;
+        $class_name = "\\lingyin\\profile\\drivers\\{$driver}";
+        self::$_driver = new $class_name();
 
         return true;
     }
