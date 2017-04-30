@@ -1,0 +1,25 @@
+{
+  "name": "lingsoft/profile",
+  "description": "php性能分析工具库",
+  "type": "ling-extension",
+  "license": "Apache License 2.0",
+  "keywords": [
+    "xhprof",
+    "uprofiler"
+  ],
+  "homepage": "https://profile.lingyin99.com",
+  "authors": [
+    {
+      "name": "actors315",
+      "email": "xie.hj@lingyin99.cn"
+    }
+  ],
+  "require": {
+    "php": ">=5.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "lingyin\\profile": "./"
+    }
+  }
+}
