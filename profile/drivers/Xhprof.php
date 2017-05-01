@@ -7,6 +7,13 @@
  * Time: 21:22
  */
 
+/**
+ * xhprof性能分析
+ *
+ * 需要安装[xhprof](https://github.com/phacility/xhprof)扩展，
+ * xhprof不支持php7,可以安装phpng-xhprof(https://github.com/yaoguais/phpng-xhprof)替代
+ */
+
 namespace lingyin\profile\drivers;
 
 class Xhprof
