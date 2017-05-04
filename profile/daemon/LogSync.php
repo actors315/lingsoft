@@ -30,6 +30,7 @@ class LogSync
      * 初始化
      *
      * @param array $cfg
+     * @return $this
      */
     public function handler(array $cfg = [])
     {
@@ -45,8 +46,8 @@ class LogSync
             }
         }
 
-        isset($cfg['input_sync_second']) && $this->input_sync_second = $cfg['input_sync_second'];
-        isset($cfg['input_sync_memory']) && $this->input_sync_memory = $cfg['input_sync_memory'];
+        isset($cfg['up_sync_second']) && $this->up_sync_memory = $cfg['up_sync_second'];
+        isset($cfg['up_sync_memory']) && $this->up_sync_memory = $cfg['up_sync_memory'];
 
         if (isset($cfg['adapter']) && in_array($cfg['adapter'], ['Redis', 'ActiveMQ'])) {
             $this->_adapter = $cfg['adapter'];
@@ -55,7 +56,8 @@ class LogSync
 
         isset($cfg['driver']) && $this->config = $cfg['driver'];
 
-        $this->_driver = $this->initDriver();
+        $this->initDriver();
+        return $this;
     }
 
     public function run()
@@ -98,7 +100,7 @@ class LogSync
 
     private function initDriver()
     {
-        $class_name = "\\lingyin\\profile\\daemon\\channel\\{$this->_adapter}";
+        $class_name = "lingyin\\profile\\daemon\\channel\\{$this->_adapter}";
         $this->_driver = new $class_name($this->config);
     }
 

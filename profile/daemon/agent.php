@@ -1,11 +1,10 @@
 <?php
-/**
- * php-logstash base configure
- */
-require __DIR__ .'/php-logstash/logstash.php';
+
+require __DIR__ .'/LogSync.php';
+require __DIR__.'/channel/SyncInterface.php';
+require __DIR__ .'/channel/Redis.php';
 $cfg = [
-	'redis' => 'tcp://username:profileLogStash@115.29.49.123:6380',
+
 ];
 
-
-(new LogStash())->handler($cfg)->run();
+(new \lingyin\profile\daemon\LogSync())->handler($cfg)->run();

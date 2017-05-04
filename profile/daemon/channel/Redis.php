@@ -29,6 +29,8 @@ class Redis implements SyncInterface
                 'auth' => 'profileLogStash',
                 'timeout' => 60
             ];
+
+        $this->connect();
     }
 
     /**
@@ -57,8 +59,8 @@ class Redis implements SyncInterface
 
         try {
             $pipe = $this->instance->multi(\Redis::PIPELINE);
-            foreach ($this->message as $pack) {
-                $pipe->lPush($this->queue, $pack);
+            foreach ($message as $pack) {
+                $pipe->lPush($this->queue, gzcompress($pack));
             }
             $pipe->exec();
         } catch (\Exception $e) {
