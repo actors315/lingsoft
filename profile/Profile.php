@@ -7,6 +7,7 @@
  */
 
 namespace lingyin\profile;
+use lingyin\profile\sync\channel\Http;
 
 /**
  * xhprof性能分析
@@ -207,21 +208,14 @@ class Profile
     {
         if (!PHP_PROFILE_DEV) {
             return;
-        } elseif (defined('PHP_PROFILE_API')) {
-            $url = PHP_PROFILE_API;
-        } else {
-            $url = 'http://profile.lingyin99.com/api/import';
         }
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_POST => 1,
-            CURLOPT_POSTFIELDS => ['data' => gzcompress(serialize($data))],
-            CURLOPT_TIMEOUT => 3,
-            CURLOPT_CONNECTTIMEOUT => 3,
-        ]);
-        curl_exec($ch);
-        curl_close($ch);
+
+        $config = [];
+        if (defined('PHP_PROFILE_API')) {
+            $config['url'] = PHP_PROFILE_API;
+        }
+
+        (new Http($config))->syncMessage([serialize($data)]);
     }
 
     private static function isSupported($driver)

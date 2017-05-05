@@ -6,7 +6,7 @@
  * Time: 20:06
  */
 
-namespace lingyin\profile\daemon;
+namespace lingyin\profile\sync;
 
 
 class LogSync

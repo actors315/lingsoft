@@ -6,7 +6,7 @@
  * Time: 22:19
  */
 
-namespace lingyin\profile\daemon\channel;
+namespace lingyin\profile\sync\channel;
 
 
 class Redis implements SyncInterface
@@ -47,7 +47,7 @@ class Redis implements SyncInterface
         }
     }
 
-    public function syncMessage($message)
+    public function syncMessage($message = [])
     {
         if (empty($message)) return false;
 
