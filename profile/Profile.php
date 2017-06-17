@@ -39,7 +39,7 @@ class Profile
      *
      * @var int
      */
-    const SAMPLING_RATE = 10;
+    const SAMPLING_RATE = 100;
 
     /**
      * 站点标识
