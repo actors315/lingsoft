@@ -18,6 +18,11 @@ class Container
     private $_singletons = [];
 
     /**
+     * @var array 可实例化对象定义索引
+     */
+    private $_definitions = [];
+
+    /**
      * @var array 对象映射索引
      */
     private $_reflections = [];
@@ -27,17 +32,45 @@ class Container
      */
     private $_dependencies = [];
 
-    public function get($class)
+    /**
+     * 回调对象直接调用
+     *
+     * @param callable $callback
+     * @param array $params
+     * @return mixed
+     */
+    public function invoke(callable $callback, $params = [])
     {
-        if (isset($this->_singletons[$class])) {
-            return $this->_singletons[$class];
+        if (is_callable($callback)) {
+            return call_user_func_array($callback, $this->resolveCallableDependencies($callback, $params));
+        } else {
+            return call_user_func_array($callback, $params);
         }
     }
 
-    protected function build($class)
+    /**
+     * 获取所请求类的实例
+     *
+     * @param $class
+     * @param array $params
+     * @return mixed
+     */
+    public function get($class, $params = [])
+    {
+        if (isset($this->_singletons[$class])) {
+            return $this->_singletons[$class];
+        } elseif (isset($this->_definitions[$class])) {
+            return $this->build($class, $params);
+        }
+    }
+
+    protected function build($class, $params)
     {
         list ($reflection, $dependencies) = $this->getDependencies($class);
 
+        foreach ($params as $index => $value) {
+            $dependencies[$index] = $value;
+        }
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
         if ($reflection->isInstantiable() == false) {
