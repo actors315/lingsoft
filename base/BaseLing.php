@@ -75,4 +75,15 @@ class BaseLing
 
         return static::$container;
     }
+
+    /**
+     * 将路径别名转换为实际路径
+     *
+     * @param $alias 路径别名
+     * @return string
+     */
+    public static function getAlias($alias)
+    {
+        return $alias;
+    }
 }
