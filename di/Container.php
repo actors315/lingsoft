@@ -9,7 +9,9 @@
 namespace lingyin\di;
 
 
-class Container
+use lingyin\base\Component;
+
+class Container extends Component
 {
 
     /**

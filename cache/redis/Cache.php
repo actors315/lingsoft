@@ -11,7 +11,6 @@ namespace lingyin\cache\redis;
 
 class Cache extends \lingyin\cache\Cache
 {
-
     public $redis = 'redis';
 
     /**

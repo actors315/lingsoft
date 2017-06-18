@@ -47,6 +47,22 @@ class BaseLing
     }
 
     /**
+     * 配置对象属性
+     *
+     * @param object $object
+     * @param array $properties 需配置的属性,格式为[[key=>value']]
+     * @return object
+     */
+    public static function setProperties($object, $properties)
+    {
+        foreach ($properties as $name => $value) {
+            $object->$name = $value;
+        }
+
+        return $object;
+    }
+
+    /**
      * 获取依赖注入容器
      *
      * @return Container|null
