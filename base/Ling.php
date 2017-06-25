@@ -10,7 +10,7 @@ namespace lingyin\base;
 use lingyin\base\exception\InvalidConfigException;
 use lingyin\di\Container;
 
-class Ling extends BaseLing
+class Ling
 {
     public static $app;
 
