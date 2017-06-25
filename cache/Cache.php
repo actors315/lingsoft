@@ -7,6 +7,7 @@
  */
 
 namespace lingyin\cache;
+use lingyin\base\Component;
 
 /**
  * Cache基类，提供规范
@@ -14,7 +15,7 @@ namespace lingyin\cache;
  * Class Cache
  * @package lingyin\cache
  */
-abstract class Cache
+abstract class Cache extends Component
 {
     /**
      * 缓存命名空间
@@ -63,7 +64,7 @@ abstract class Cache
      * @param $expire
      * @return mixed
      */
-    public function set($key, $value, $expire)
+    public function set($key, $value, $expire = 0)
     {
         $key = $this->buildKey($key);
 
@@ -74,7 +75,7 @@ abstract class Cache
      * @param $key
      * @return mixed
      */
-    abstract function getValue($key);
+    abstract protected function getValue($key);
 
     /**
      * @param $key
@@ -82,5 +83,5 @@ abstract class Cache
      * @param $expire
      * @return mixed
      */
-    abstract function setValue($key, $value, $expire);
+    abstract protected function setValue($key, $value, $expire);
 }

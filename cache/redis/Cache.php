@@ -9,17 +9,41 @@
 
 namespace lingyin\cache\redis;
 
+use lingyin\di\Instance;
+
 class Cache extends \lingyin\cache\Cache
 {
-    public $redis = 'redis';
+
+    /**
+     * @var Connection null
+     */
+    public $instance = null;
+
+    /**
+     * @var array redis配置
+     */
+    public $redis = [];
+
+    public $driver = PhpredisConnection::class;
+
+    public function init()
+    {
+        parent::init();
+
+        if (!$this->driver instanceof Connection) {
+            $this->driver = PhpredisConnection::class;
+        }
+
+        $this->instance = Instance::ensure($this->redis, $this->driver);
+    }
 
     /**
      * @param $key
      * @return mixed
      */
-    function getValue($key)
+    protected function getValue($key)
     {
-
+        return $this->instance->executeCommand('GET', [$key]);
     }
 
     /**
@@ -28,8 +52,14 @@ class Cache extends \lingyin\cache\Cache
      * @param $expire
      * @return mixed
      */
-    function setValue($key, $value, $expire)
+    protected function setValue($key, $value, $expire = 0)
     {
+        if ($expire == 0) {
+            return $this->instance->executeCommand('SET', [$key, $value]);
+        }
 
+        $expire = (int)($expire * 1000);
+
+        return $this->instance->executeCommand('PSETEX', [$key, $expire, $value]);
     }
 }

@@ -57,16 +57,16 @@ class Container extends Component
      * @param array $params
      * @return mixed
      */
-    public function get($class, $params = [])
+    public function get($class, $params = [], $config = [])
     {
         if (isset($this->_singletons[$class])) {
             return $this->_singletons[$class];
         } elseif (isset($this->_definitions[$class])) {
-            return $this->build($class, $params);
+            return $this->build($class, $params, $config);
         }
     }
 
-    protected function build($class, $params)
+    protected function build($class, $params, $config)
     {
         list ($reflection, $dependencies) = $this->getDependencies($class);
 
@@ -79,8 +79,15 @@ class Container extends Component
             throw new NotInstantiableException($reflection->name);
         }
 
-        return $reflection->newInstanceArgs($dependencies);
+        $object = $reflection->newInstanceArgs($dependencies);
 
+        if (!empty($config) && is_array($config)) {
+            foreach ($config as $name => $value) {
+                $object->$name = $value;
+            }
+        }
+
+        return $object;
     }
 
     /**

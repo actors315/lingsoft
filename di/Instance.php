@@ -33,7 +33,8 @@ class Instance
      * @param $id
      * @return static
      */
-    public static function of($id){
+    public static function of($id)
+    {
         return new static($id);
     }
 
@@ -46,41 +47,27 @@ class Instance
      * @return object
      * @throws InvalidConfigException
      */
-    public function ensure($reference, $type = null, $container = null)
+    public static function ensure($reference, $type = null)
     {
         if (empty($reference)) {
-            throw new InvalidConfigException('LostRequireComponent');
+            throw new InvalidConfigException('LostRequireParameter');
+        }
+
+        if (is_array($reference)) {
+            $class = !empty($reference['class']) ? $reference['class'] : $type;
+            unset($reference['class']);
+            $reference = Ling::getContainer()->get($class, [], $reference);
         }
 
         if (is_string($reference)) {
             $reference = new static($reference);
-        } elseif ($type == null || $reference instanceof $type) {
-            return $reference;
         }
 
-        if ($reference instanceof self) {
-            $component = $reference->get($container);
-            if ($type == null || $component instanceof $type) {
-                return $component;
-            } else {
-                throw new InvalidConfigException();
-            }
+        if ($type == null || $reference instanceof $type) {
+            return $reference;
         }
 
         $valueType = is_object($reference) ? get_class($reference) : gettype($reference);
         throw new InvalidConfigException("Invalid data type: $valueType. $type is expected.");
-    }
-
-    /**
-     * @param Container $container
-     * @return mixed
-     */
-    public function get($container = null)
-    {
-        if ($container) {
-            return $container->get($this->id);
-        }
-
-        return Ling::getContainer()->get($this->id);
     }
 }

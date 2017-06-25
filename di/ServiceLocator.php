@@ -109,7 +109,7 @@ class ServiceLocator extends Component
      * 当前是否已包含某个实例
      *
      * @param $id
-     * @param bool $checkInstance 默认false,只检查实例是否已创建,true检查实例是否可创建
+     * @param bool $checkInstance 默认false,检查实例是可创建,true检查实例是否已创建
      * @return bool
      */
     public function has($id, $checkInstance = false)
