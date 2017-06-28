@@ -14,7 +14,7 @@ namespace lingyin\base;
  * Class Component
  * @package lingyin\base
  */
-class Component
+class Component implements ConfigurableInterface
 {
 
     public function __construct($config = [])

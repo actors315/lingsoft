@@ -55,13 +55,14 @@ class Container extends Component
      *
      * @param $class
      * @param array $params
+     * @param $config
      * @return mixed
      */
     public function get($class, $params = [], $config = [])
     {
         if (isset($this->_singletons[$class])) {
             return $this->_singletons[$class];
-        } elseif (isset($this->_definitions[$class])) {
+        } elseif (!isset($this->_definitions[$class])) {
             return $this->build($class, $params, $config);
         }
     }
@@ -79,8 +80,16 @@ class Container extends Component
             throw new NotInstantiableException($reflection->name);
         }
 
-        $object = $reflection->newInstanceArgs($dependencies);
+        if (empty($config)) {
+            return $reflection->newInstanceArgs($dependencies);
+        }
 
+        if (!empty($dependencies) && $reflection->implementsInterface('lingyin\base\ConfigurableInterface')) {
+            $dependencies[count($dependencies) - 1] = $config;
+            return $reflection->newInstanceArgs($dependencies);
+        }
+
+        $object = $reflection->newInstanceArgs($dependencies);
         if (!empty($config) && is_array($config)) {
             foreach ($config as $name => $value) {
                 $object->$name = $value;
