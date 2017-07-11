@@ -12,7 +12,15 @@ use lingyin\di\Container;
 
 class Ling
 {
+    /**
+     * @var Application
+     */
     public static $app;
+
+    /**
+     * @var array 别名
+     */
+    public static $aliases = ['@lingyin' => __DIR__];
 
     /**
      * @var Container
@@ -76,6 +84,25 @@ class Ling
     }
 
     /**
+     * 设置别名
+     *
+     * @param $alias
+     * @param $path string | null 完整路径名或为null表示删除别名
+     */
+    public static function setAlias($alias, $path)
+    {
+        if (strncmp($alias, '@', 1)) {
+            $alias = '@' . $alias;
+        }
+
+        if ($path !== null) {
+            static::$aliases[$alias] = $path;
+        } elseif (isset(self::$aliases[$alias])) {
+            unset(static::$aliases[$alias]);
+        }
+    }
+
+    /**
      * 将路径别名转换为实际路径
      *
      * @param $alias 路径别名
@@ -84,5 +111,36 @@ class Ling
     public static function getAlias($alias)
     {
         return $alias;
+    }
+
+    /**
+     * 加载配置文件
+     *
+     * 加载配置文件，环境优先
+     *
+     * @param $configFile
+     * @param null $env
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public static function loadConfig($configFile, $env = null)
+    {
+        if (!is_file($configFile)) {
+            throw new InvalidConfigException(sprintf('配置文件"%s"不存在', $configFile));
+        } else {
+            $config = require($configFile);
+        }
+
+        if (null === $env) {
+            $env = 'product';
+        }
+
+        // @root/config/config.<env>.php
+        $file = substr_replace($configFile, $env . '.', -3, 0);
+        if (is_file($file)) {
+            $config = ArrayHelper::merge($config, require($file));
+        }
+
+        return $config;
     }
 }

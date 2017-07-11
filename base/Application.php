@@ -22,6 +22,11 @@ abstract class Application extends Module
      */
     public $bootstrap = [];
 
+    /**
+     * @var array 别名
+     */
+    public $aliases = [];
+
     public function __construct($config = [])
     {
         Ling::$app = $this;
@@ -57,6 +62,10 @@ abstract class Application extends Module
      */
     protected function bootstrap()
     {
+
+        foreach ($this->aliases as $alias => $path) {
+            Ling::setAlias($alias, $path);
+        }
 
         foreach ($this->bootstrap as $class) {
             $component = null;

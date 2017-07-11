@@ -1,7 +1,7 @@
 {
   "name": "lingsoft/lingyin",
-  "description": "收集的一些类库自定义封装",
-  "type": "ling-extension",
+  "description": "一个不成熟的轮子",
+  "type": "ling-framework",
   "license": "Apache License 2.0",
   "keywords": [
     "ling",

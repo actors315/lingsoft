@@ -23,7 +23,7 @@ class Module extends ServiceLocator
 {
 
     /**
-     * @var 模块标识
+     * @var string 模块标识
      */
     public $id;
 

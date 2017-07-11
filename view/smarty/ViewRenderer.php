@@ -61,9 +61,14 @@ class ViewRenderer extends \lingyin\base\ViewRenderer
      * @param $params
      * @return mixed
      */
-    public function render($view, $file, $params)
+    public function render($view, $file, $params = [])
     {
+        foreach ($params as $key => $value){
+            $this->_smarty->assign($key,$value);
+        }
+
         $this->_smarty->assign('this',$view);
-        return $this->_smarty->fetch();
+        $this->_smarty->assign('app',Ling::$app);
+        return $this->_smarty->fetch($file);
     }
 }
