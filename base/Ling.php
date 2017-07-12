@@ -22,7 +22,7 @@ class Ling
     /**
      * @var array 别名
      */
-    public static $aliases = ['@lingyin' => __DIR__];
+    public static $aliases = ['@lingyin' => __DIR__ . '/..'];
 
     /**
      * @var Container
@@ -97,28 +97,66 @@ class Ling
             $alias = '@' . $alias;
         }
 
+        $pos = strpos($alias, '/');
+        $root = $pos === false ? $alias : substr($alias, 0, $pos);
         if ($path !== null) {
-            static::$aliases[$alias] = $path;
+            if (!isset(static::$aliases[$root])) {
+                if ($pos === false) {
+                    static::$aliases[$root] = $path;
+                } else {
+                    static::$aliases[$root] = [$alias => $path];
+                }
+            } elseif (is_string(static::$aliases[$root])) {
+                if ($pos === false) {
+                    static::$aliases[$root] = $path;
+                } else {
+                    static::$aliases[$root] = [
+                        $alias => $path,
+                        $root => static::$aliases[$root],
+                    ];
+                }
+            } else {
+                static::$aliases[$root][$alias] = $path;
+            }
         } elseif (isset(self::$aliases[$alias])) {
-            unset(static::$aliases[$alias]);
+            if (is_array(static::$aliases[$root])) {
+                unset(static::$aliases[$root][$alias]);
+            } elseif ($pos === false) {
+                unset(static::$aliases[$root]);
+            }
         }
     }
 
     /**
      * 将路径别名转换为实际路径
      *
-     * @param $alias 路径别名
+     * @param string $alias 路径别名
+     * @param boolean $throwException 是否抛出异常
      * @return string
      * @throws InvalidParamException
      */
-    public static function getAlias($alias)
+    public static function getAlias($alias, $throwException = true)
     {
         if (strncmp($alias, '@', 1)) {
             return $alias;
         }
 
-        if (isset(static::$aliases[$alias])) {
-            return static::$aliases[$alias];
+        $pos = strpos($alias, '/');
+        $root = $pos === false ? $alias : substr($alias, 0, $pos);
+        if (isset(static::$aliases[$root])) {
+            if (is_string(static::$aliases[$root])) {
+                return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
+            } else {
+                foreach (static::$aliases[$root] as $name => $path) {
+                    if (strpos($alias . '/', $name . '/') === 0) {
+                        return $path . substr($alias, strlen($name));
+                    }
+                }
+            }
+        }
+
+        if ($throwException === false) {
+            return false;
         }
 
         throw new InvalidParamException("Invalid path alias: {$alias}");
@@ -153,5 +191,23 @@ class Ling
         }
 
         return $config;
+    }
+
+    /**
+     * 自动加载
+     *
+     * @param $className
+     */
+    public static function autoload($className)
+    {
+        if (strpos($className, '\\') === false) {
+            return;
+        }
+        $classFile = static::getAlias('@' . str_replace('\\', '/', $className) . '.php', false);
+        if ($classFile === false || !is_file($classFile)) {
+            return;
+        }
+        $classFile = realpath($classFile);
+        include($classFile);
     }
 }

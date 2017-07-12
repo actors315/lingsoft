@@ -7,6 +7,7 @@
  */
 
 namespace lingyin\base;
+
 use lingyin\base\exception\ExitException;
 
 /**
@@ -37,9 +38,14 @@ abstract class Application extends Module
         Component::__construct($config);
     }
 
+    abstract function handleRequest($request);
+
     public function run()
     {
         try {
+
+            $response = $this->handleRequest($this->get('request'));
+            var_dump($response);
 
         } catch (ExitException $e) {
 

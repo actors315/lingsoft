@@ -21,6 +21,7 @@ class Component implements ConfigurableInterface
 
     public function __construct($config = [])
     {
+        var_dump($this);
         if (!empty($config)) {
             Ling::setProperties($this, $config);
         }
