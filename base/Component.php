@@ -8,6 +8,8 @@
 
 namespace lingyin\base;
 
+use lingyin\base\exception\UnknownPropertyException;
+
 /**
  * 组件基类
  *

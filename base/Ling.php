@@ -8,7 +8,9 @@
 namespace lingyin\base;
 
 use lingyin\base\exception\InvalidConfigException;
+use lingyin\base\exception\InvalidParamException;
 use lingyin\di\Container;
+use lingyin\helpers\ArrayHelper;
 
 class Ling
 {
@@ -107,10 +109,19 @@ class Ling
      *
      * @param $alias 路径别名
      * @return string
+     * @throws InvalidParamException
      */
     public static function getAlias($alias)
     {
-        return $alias;
+        if (strncmp($alias, '@', 1)) {
+            return $alias;
+        }
+
+        if (isset(static::$aliases[$alias])) {
+            return static::$aliases[$alias];
+        }
+
+        throw new InvalidParamException("Invalid path alias: {$alias}");
     }
 
     /**

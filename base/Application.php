@@ -7,6 +7,7 @@
  */
 
 namespace lingyin\base;
+use lingyin\base\exception\ExitException;
 
 /**
  * Class Application
@@ -38,7 +39,12 @@ abstract class Application extends Module
 
     public function run()
     {
+        try {
 
+        } catch (ExitException $e) {
+
+            return $e->statusCode;
+        }
     }
 
     public function init()

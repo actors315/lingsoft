@@ -9,6 +9,7 @@
 namespace lingyin\base;
 
 
+use lingyin\base\exception\InvalidParamException;
 use lingyin\di\ServiceLocator;
 
 /**
@@ -44,7 +45,7 @@ class Module extends ServiceLocator
 
 
     /**
-     * 获取模板目录
+     * 获取模块目录
      */
     public function getBasePath()
     {
@@ -52,10 +53,22 @@ class Module extends ServiceLocator
         return $this->_basePath;
     }
 
+    public function setBasePath($path)
+    {
+        $path = Ling::getAlias($path);
+        $p = realpath($path);
+        if ($p !== false && is_dir($p)) {
+            return $this->_basePath = $p;
+        }
+
+        throw new InvalidParamException("The directory does not exist: $path");
+    }
+
+
     public function getViewPath()
     {
-        if($this->_viewPath === null){
-            $this->_viewPath = $this->getBasePath().DIRECTORY_SEPARATOR.'views';
+        if ($this->_viewPath === null) {
+            $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
         }
 
         return $this->_viewPath;
