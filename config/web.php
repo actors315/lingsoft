@@ -11,5 +11,11 @@ return [
         'request' => [
             'class' => 'lingyin\web\Request',
         ],
+        'route' => [
+            'class' => 'ling\web\router\Route',
+            'rules' => [
+
+            ]
+        ]
     ]
 ];
