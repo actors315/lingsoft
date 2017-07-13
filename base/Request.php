@@ -12,4 +12,5 @@ namespace lingyin\base;
 abstract class Request extends Component
 {
 
+    abstract public function resolve();
 }

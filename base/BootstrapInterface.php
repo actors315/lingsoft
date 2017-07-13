@@ -20,7 +20,7 @@ interface BootstrapInterface
     /**
      * Bootstrap method
      *
-     * @param $application 当前运行对象
+     * @param Application $application 当前运行对象
      * @return mixed
      */
     public function bootstrap($application);

@@ -8,8 +8,19 @@
 
 namespace lingyin\web;
 
+use lingyin\web\http\HttpRequest;
 
-class Request extends \lingyin\base\Request
+/**
+ *
+ * Class Request
+ * @package lingyin\web
+ */
+class Request extends HttpRequest
 {
+
+    public function resolve()
+    {
+
+    }
 
 }
