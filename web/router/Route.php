@@ -8,9 +8,9 @@
 
 namespace lingyin\web\router;
 
-use lingyin\base\RouteInterface;
+use lingyin\base\Ling;
 
-class Route extends \lingyin\base\Route implements RouteInterface
+class Route extends \lingyin\base\Route
 {
 
     /**
@@ -18,6 +18,7 @@ class Route extends \lingyin\base\Route implements RouteInterface
      */
     function parse($request)
     {
+        $path = $request->getPath();
 
     }
 }

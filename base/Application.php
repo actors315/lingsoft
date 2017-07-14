@@ -60,6 +60,25 @@ abstract class Application extends Module
     }
 
     /**
+     * 获取uri解板对象
+     *
+     * @return UriInterface
+     */
+    public function getUriManager()
+    {
+        return $this->get('uri');
+    }
+
+    /**
+     * 获取路由对象
+     *
+     * @return RouteInterface
+     */
+    public function getRouter(){
+        return $this->get('route');
+    }
+
+    /**
      * 初始化前置操作
      *
      * @param $config

@@ -11,10 +11,16 @@ return [
         'request' => [
             'class' => 'lingyin\web\Request',
         ],
+        'uri' => [
+            'class' => 'lingyin\web\http\Uri',
+            'protocol' => 'REQUEST_URI',
+        ],
         'route' => [
-            'class' => 'ling\web\router\Route',
+            'class' => 'lingyin\web\router\Route',
             'rules' => [
-
+                '<controller:[\w-]+>/<action:[\w-]+>' => '<controller>/<action>',
+                '<controller:[\w-]+>' => '<controller>/index',
+                '' => 'index/index'
             ]
         ]
     ]

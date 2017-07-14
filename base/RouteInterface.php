@@ -15,4 +15,6 @@ interface RouteInterface
      * @param Request $request
      */
     function parse($request);
+
+    function matches($path,$rule);
 }

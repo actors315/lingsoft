@@ -22,14 +22,16 @@ use lingyin\base\Request;
 abstract class HttpRequest extends Request
 {
     /**
-     * 请求行
+     * 请求行部分
      *
      * 请求行包含请求方法 uri 和协议版本
      * 如: POST /index.php HTTP1.1
      *
      * @var
      */
-    protected $_line;
+    protected $_method;
+
+    protected $_protocol = 'HTTP/1.1';
 
     /**
      * 请求头
@@ -44,5 +46,4 @@ abstract class HttpRequest extends Request
      * @var
      */
     protected $_body;
-
 }

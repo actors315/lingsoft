@@ -9,7 +9,7 @@
 namespace lingyin\base;
 
 
-abstract class Route extends Component
+abstract class Route extends Component implements RouteInterface
 {
     /**
      * 路由规则
@@ -17,5 +17,18 @@ abstract class Route extends Component
      * @var array
      */
     public $rules = [];
+
+
+    public $compiledRules = [];
+
+    public function init()
+    {
+
+    }
+
+    public function matches($path, $rule)
+    {
+
+    }
 
 }
