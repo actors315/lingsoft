@@ -14,15 +14,4 @@ abstract class Request extends Component
     protected $_path;
 
     abstract public function resolve();
-
-    public function getPath()
-    {
-        if ($this->_path === null) {
-            $this->setPath();
-        }
-
-        return $this->_path;
-    }
-
-    abstract function setPath();
 }

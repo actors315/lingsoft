@@ -19,9 +19,15 @@ class Controller extends Component
      */
     private $_view;
 
+    public function __construct($action, $config = [])
+    {
+        $this->action = $action;
+        parent::__construct($config);
+    }
+
     public function runAction()
     {
-
+        $this->{$this->action}();
     }
 
 }

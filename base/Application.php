@@ -9,6 +9,7 @@
 namespace lingyin\base;
 
 use lingyin\base\exception\ExitException;
+use lingyin\web\router\Route;
 
 /**
  * Class Application
@@ -34,7 +35,6 @@ abstract class Application extends Module
         Ling::$app = $this;
 
         $this->preInit($config);
-
         Component::__construct($config);
     }
 
@@ -44,8 +44,7 @@ abstract class Application extends Module
     {
         try {
 
-            $response = $this->handleRequest($this->get('request'));
-            var_dump($response);
+            $this->handleRequest($this->getRequest());
 
         } catch (ExitException $e) {
 
@@ -57,6 +56,26 @@ abstract class Application extends Module
     {
         parent::init();
         $this->bootstrap();
+    }
+
+    /**
+     * 获取请求处理对象
+     *
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->get('request');
+    }
+
+    /**
+     * 获取响应处理对象
+     *
+     * @return Response
+     */
+    public function getResponse()
+    {
+        return $this->get('response');
     }
 
     /**
@@ -72,9 +91,10 @@ abstract class Application extends Module
     /**
      * 获取路由对象
      *
-     * @return RouteInterface
+     * @return RouteInterface | Route
      */
-    public function getRouter(){
+    public function getRouter()
+    {
         return $this->get('route');
     }
 

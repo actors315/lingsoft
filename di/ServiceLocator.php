@@ -63,7 +63,6 @@ class ServiceLocator extends Component
             if (is_object($definition) && !$definition instanceof \Closure) {
                 return $this->_components[$id] = $definition;
             }
-
             return $this->_components[$id] = Ling::createObject($definition);
         }
 

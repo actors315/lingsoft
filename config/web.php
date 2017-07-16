@@ -7,9 +7,12 @@
  */
 
 return [
-    'components' =>[
+    'components' => [
         'request' => [
             'class' => 'lingyin\web\Request',
+        ],
+        'response' => [
+            'class' => 'lingyin\web\Response'
         ],
         'uri' => [
             'class' => 'lingyin\web\http\Uri',
@@ -18,9 +21,24 @@ return [
         'route' => [
             'class' => 'lingyin\web\router\Route',
             'rules' => [
-                '<controller:[\w-]+>/<action:[\w-]+>' => '<controller>/<action>',
-                '<controller:[\w-]+>' => '<controller>/index',
-                '' => 'index/index'
+                'root' => [
+                    'path' => '',
+                    'defaults' => [
+                        'controller' => 'Home',
+                        'action' => 'index'
+                    ]
+                ],
+                'default' => [
+                    'path' => '{controller}{/action}',
+                    'allows' => 'route',// or get or post等 ,默认为route不区分请求方法
+                    'tokens' => [
+                        'controller' => '[\w-]+',
+                        'action' => '[\w-]+'
+                    ],
+                    'defaults' => [
+                        'action' => 'index'
+                    ]
+                ],
             ]
         ]
     ]

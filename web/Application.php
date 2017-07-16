@@ -8,8 +8,7 @@
 
 namespace lingyin\web;
 
-
-use lingyin\base\Request;
+use lingyin\helpers\StringHelper;
 
 class Application extends \lingyin\base\Application
 {
@@ -17,10 +16,20 @@ class Application extends \lingyin\base\Application
     /**
      * 处理请求
      *
-     * @param Request $request
+     * @param \lingyin\web\Request $request
      */
     function handleRequest($request)
     {
-        $request->resolve();
+        $route = $request->resolve();
+        foreach ($route->attributes as $name => $value) {
+            if ('controller' == $name) {
+                $this->controller = StringHelper::convertUnderline($value) . 'Controller';
+            }
+            if ('action' == $name) {
+                $this->action = 'action' . StringHelper::convertUnderline($value);
+            }
+        }
+
+        $this->runAction();
     }
 }

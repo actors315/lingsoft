@@ -9,8 +9,9 @@
 namespace lingyin\base;
 
 
-abstract class RouteCompile
+abstract class RouteCompile extends Component
 {
+
 
     public function matches($path)
     {

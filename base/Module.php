@@ -9,8 +9,11 @@
 namespace lingyin\base;
 
 
+use lingyin\base\exception\InvalidConfigException;
 use lingyin\base\exception\InvalidParamException;
+use lingyin\base\exception\InvalidRouteException;
 use lingyin\di\ServiceLocator;
+use lingyin\web\Controller;
 
 /**
  * 模块基类
@@ -32,6 +35,10 @@ class Module extends ServiceLocator
      * @var string 控制器命名空间
      */
     public $controllerNamespace;
+
+    public $controller = 'IndexController';
+
+    public $action = 'actionIndex';
 
     /**
      * @var 模块根目录
@@ -72,6 +79,34 @@ class Module extends ServiceLocator
         }
 
         return $this->_viewPath;
+    }
+
+    public function runAction()
+    {
+        $controller = $this->createController();
+        if (false === $controller) {
+            throw new InvalidRouteException("Unable to resolve the request {$this->controller}/{$this->action}.");
+        }
+        $controller->runAction();
+    }
+
+    /**
+     * @return bool| Controller | \lingyin\base\Controller
+     * @throws InvalidConfigException
+     */
+    public function createController()
+    {
+        $className = ltrim($this->controllerNamespace . '\\' . $this->controller);
+        if (!class_exists($className)) {
+            return false;
+        }
+
+        if (is_subclass_of($className, 'lingyin\base\Controller')) {
+            $controller = Ling::createObject($className, [$this->action]);
+            return get_class($controller) === $className ? $controller : false;
+        }
+
+        throw new InvalidConfigException('Controller class must extend from \\lingyin\\base\\Controller.');
     }
 
 }

@@ -9,7 +9,7 @@
 namespace lingyin\web\router;
 
 
-class RouteCompile
+class RouteCompile extends \lingyin\base\RouteCompile
 {
 
 }
