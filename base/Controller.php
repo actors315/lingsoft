@@ -12,22 +12,31 @@ namespace lingyin\base;
 class Controller extends Component
 {
 
-    public $action;
+    public $module;
 
     /**
      * @var View 模板渲染对象
      */
     private $_view;
 
-    public function __construct($action, $config = [])
+    /**
+     * Controller constructor.
+     * @param Module $module
+     * @param array $config
+     */
+    public function __construct($module = null, $config = [])
     {
-        $this->action = $action;
+        $this->module = $module;
         parent::__construct($config);
     }
 
     public function runAction()
     {
-        $this->{$this->action}();
+        $module = $this->module;
+        while ($module->action === null) {
+            $module = $module->module;
+        }
+        $this->{$module->action}();
     }
 
 

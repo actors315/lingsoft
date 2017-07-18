@@ -36,11 +36,14 @@ class Module extends ServiceLocator
      */
     public $controllerNamespace;
 
-    public $module = null;
+    /**
+     * @var Module 父模块
+     */
+    public $module;
 
-    public $controller = 'IndexController';
+    public $controller;
 
-    public $action = 'actionIndex';
+    public $action;
 
     /**
      * @var array 模块
@@ -57,8 +60,10 @@ class Module extends ServiceLocator
      */
     private $_viewPath;
 
-    public function __construct(array $config = [])
+    public function __construct($id, $parent = null, array $config = [])
     {
+        $this->id = $id;
+        $this->module = $parent;
         parent::__construct($config);
     }
 
@@ -98,7 +103,7 @@ class Module extends ServiceLocator
         $module = $this->getModule($this->module);
         $controller = $module->createController();
         if (false === $controller) {
-            throw new InvalidRouteException("Unable to resolve the request {$this->controller}/{$this->action}.");
+            throw new InvalidRouteException("Unable to resolve the request.");
         }
         $controller->runAction();
     }
@@ -109,13 +114,17 @@ class Module extends ServiceLocator
      */
     public function createController()
     {
-        $className = ltrim($this->controllerNamespace . '\\' . $this->controller);
+        $module = $this->module;
+        while ($module!==null && $module->controller === null ){
+            $module = $module->module;
+        }
+        $className = ltrim($this->controllerNamespace . '\\' . $module->controller);
         if (!class_exists($className)) {
             return false;
         }
 
         if (is_subclass_of($className, 'lingyin\base\Controller')) {
-            $controller = Ling::createObject($className, [$this->action]);
+            $controller = Ling::createObject($className, [$module]);
             return get_class($controller) === $className ? $controller : false;
         }
 
@@ -131,10 +140,10 @@ class Module extends ServiceLocator
     public function getModule($id)
     {
         if ($id === null || !isset($this->_modules[$id])) {
-            return $this;
+            return $this->module = $this;
         }
 
-        return Ling::createObject($this->_modules[$id]);
+        return Ling::createObject($this->_modules[$id], [$id, $this]);
     }
 
     /**
