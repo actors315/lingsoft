@@ -30,4 +30,10 @@ class Controller extends Component
         $this->{$this->action}();
     }
 
+
+    public function beforeAction($action)
+    {
+
+    }
+
 }

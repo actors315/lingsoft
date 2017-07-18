@@ -36,9 +36,16 @@ class Module extends ServiceLocator
      */
     public $controllerNamespace;
 
+    public $module = null;
+
     public $controller = 'IndexController';
 
     public $action = 'actionIndex';
+
+    /**
+     * @var array 模块
+     */
+    private $_modules = [];
 
     /**
      * @var 模块根目录
@@ -49,6 +56,11 @@ class Module extends ServiceLocator
      * @var string 模板view文件根目录
      */
     private $_viewPath;
+
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+    }
 
 
     /**
@@ -83,7 +95,8 @@ class Module extends ServiceLocator
 
     public function runAction()
     {
-        $controller = $this->createController();
+        $module = $this->getModule($this->module);
+        $controller = $module->createController();
         if (false === $controller) {
             throw new InvalidRouteException("Unable to resolve the request {$this->controller}/{$this->action}.");
         }
@@ -107,6 +120,33 @@ class Module extends ServiceLocator
         }
 
         throw new InvalidConfigException('Controller class must extend from \\lingyin\\base\\Controller.');
+    }
+
+    /**
+     * 获取一个模块
+     *
+     * @param string $id 模块ID
+     * @return Module
+     */
+    public function getModule($id)
+    {
+        if ($id === null || !isset($this->_modules[$id])) {
+            return $this;
+        }
+
+        return Ling::createObject($this->_modules[$id]);
+    }
+
+    /**
+     * 注册模块
+     *
+     * @param array $modules 模块数组
+     */
+    public function setModules($modules)
+    {
+        foreach ($modules as $id => $module) {
+            $this->_modules[$id] = $module;
+        }
     }
 
 }

@@ -35,7 +35,7 @@ class Ling
      *
      * @param string|array|callable $type
      * @param array $params
-     * @return object
+     * @return mixed
      * @throws InvalidConfigException
      */
     public static function createObject($type, array $params = [])

@@ -22,12 +22,14 @@ class Application extends \lingyin\base\Application
     {
         $route = $request->resolve();
         foreach ($route->attributes as $name => $value) {
-            if ('controller' == $name) {
+            if ('module' == $name) {
+                $this->module = strtolower($value);
+            } elseif ('controller' == $name) {
                 $this->controller = StringHelper::convertUnderline($value) . 'Controller';
-            }
-            if ('action' == $name) {
+            } elseif ('action' == $name) {
                 $this->action = 'action' . StringHelper::convertUnderline($value);
             }
+            $request->withAttribute($name, $value);
         }
 
         $this->runAction();

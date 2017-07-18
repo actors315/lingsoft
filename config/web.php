@@ -21,10 +21,14 @@ return [
         'route' => [
             'class' => 'lingyin\web\router\Route',
             'rules' => [
-                'root' => [
-                    'path' => '',
+                'modules' => [
+                    'path' => '{module}{/controller,action}',
+                    'tokens' => [
+                        'module' => '(user|order)+',
+                        'controller' => '[\w-]+',
+                        'action' => '[\w-]+'
+                    ],
                     'defaults' => [
-                        'controller' => 'Home',
                         'action' => 'index'
                     ]
                 ],
@@ -36,6 +40,13 @@ return [
                         'action' => '[\w-]+'
                     ],
                     'defaults' => [
+                        'action' => 'index'
+                    ]
+                ],
+                'root' => [
+                    'path' => '',
+                    'defaults' => [
+                        'controller' => 'Index',
                         'action' => 'index'
                     ]
                 ],
