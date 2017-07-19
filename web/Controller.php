@@ -12,8 +12,6 @@ namespace lingyin\web;
 class Controller extends \lingyin\base\Controller
 {
 
-    public $actionParams = [];
-
     public function beforeAction($action)
     {
 

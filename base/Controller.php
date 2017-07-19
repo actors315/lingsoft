@@ -8,16 +8,17 @@
 
 namespace lingyin\base;
 
-
-class Controller extends Component
+/**
+ * Class Controller
+ * @package lingyin\base
+ * @property Module $module
+ */
+abstract class Controller extends Component implements ViewContextInterface
 {
 
     public $module;
 
-    /**
-     * @var View 模板渲染对象
-     */
-    private $_view;
+    private $_viewPath;
 
     /**
      * Controller constructor.
@@ -30,19 +31,34 @@ class Controller extends Component
         parent::__construct($config);
     }
 
+    public function beforeAction($action)
+    {
+    }
+
     public function runAction()
     {
         $module = $this->module;
         while ($module->action === null) {
             $module = $module->module;
         }
-        $this->{$module->action}();
+        return $this->{$module->action}();
     }
 
-
-    public function beforeAction($action)
+    public function render($view, $params = [])
     {
-
+        return Ling::$app->getView()->render($view, $params, $this);
     }
 
+    public function getViewPath()
+    {
+        if($this->_viewPath === null){
+            return $this->module->getViewPath();
+        }
+        return $this->_viewPath;
+    }
+
+    public function setViewPath($path)
+    {
+        $this->_viewPath = Ling::getAlias($path);
+    }
 }

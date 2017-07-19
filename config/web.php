@@ -51,6 +51,14 @@ return [
                     ]
                 ],
             ]
+        ],
+        'view' => [
+            'class' => 'lingyin\web\View',
+            'renderWorker' => [
+                'html' => [
+                    'class' => 'lingyin\view\smarty\ViewRenderer'
+                ]
+            ]
         ]
     ]
 ];

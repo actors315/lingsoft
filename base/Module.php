@@ -70,6 +70,8 @@ class Module extends ServiceLocator
 
     /**
      * 获取模块目录
+     *
+     * @return string
      */
     public function getBasePath()
     {
@@ -94,7 +96,6 @@ class Module extends ServiceLocator
         if ($this->_viewPath === null) {
             $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
         }
-
         return $this->_viewPath;
     }
 
@@ -105,7 +106,7 @@ class Module extends ServiceLocator
         if (false === $controller) {
             throw new InvalidRouteException("Unable to resolve the request.");
         }
-        $controller->runAction();
+        return $controller->runAction();
     }
 
     /**
@@ -115,7 +116,7 @@ class Module extends ServiceLocator
     public function createController()
     {
         $module = $this->module;
-        while ($module!==null && $module->controller === null ){
+        while ($module !== null && $module->controller === null) {
             $module = $module->module;
         }
         $className = ltrim($this->controllerNamespace . '\\' . $module->controller);

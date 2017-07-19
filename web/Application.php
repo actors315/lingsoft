@@ -32,6 +32,6 @@ class Application extends \lingyin\base\Application
             $request->withAttribute($name, $value);
         }
 
-        $this->runAction();
+        echo $this->runAction();
     }
 }

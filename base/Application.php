@@ -10,10 +10,12 @@ namespace lingyin\base;
 
 use lingyin\base\exception\ExitException;
 use lingyin\web\router\Route;
+use lingyin\web\View;
 
 /**
  * Class Application
  * @package lingyin\base
+ *
  */
 abstract class Application extends Module
 {
@@ -59,6 +61,43 @@ abstract class Application extends Module
     }
 
     /**
+     * 初始化前置操作
+     *
+     * @param $config
+     */
+    protected function preInit(&$config)
+    {
+
+    }
+
+    /**
+     * 初始化操作
+     */
+    protected function bootstrap()
+    {
+
+        foreach ($this->aliases as $alias => $path) {
+            Ling::setAlias($alias, $path);
+        }
+
+        foreach ($this->bootstrap as $class) {
+            $component = null;
+
+            if (is_string($class)) {
+
+            }
+
+            if ($component === null) {
+                $component = Ling::createObject($class);
+            }
+
+            if ($component instanceof BootstrapInterface) {
+                $component->bootstrap($this);
+            }
+        }
+    }
+
+    /**
      * 获取请求处理对象
      *
      * @return Request
@@ -99,39 +138,13 @@ abstract class Application extends Module
     }
 
     /**
-     * 初始化前置操作
+     * 获取view对象
      *
-     * @param $config
+     * @return View
      */
-    protected function preInit(&$config)
+    public function getView()
     {
-
+        return $this->get('view');
     }
 
-    /**
-     * 初始化操作
-     */
-    protected function bootstrap()
-    {
-
-        foreach ($this->aliases as $alias => $path) {
-            Ling::setAlias($alias, $path);
-        }
-
-        foreach ($this->bootstrap as $class) {
-            $component = null;
-
-            if (is_string($class)) {
-
-            }
-
-            if ($component === null) {
-                $component = Ling::createObject($class);
-            }
-
-            if ($component instanceof BootstrapInterface) {
-                $component->bootstrap($this);
-            }
-        }
-    }
 }

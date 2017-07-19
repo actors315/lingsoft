@@ -66,7 +66,6 @@ class ViewRenderer extends \lingyin\base\ViewRenderer
         foreach ($params as $key => $value){
             $this->_smarty->assign($key,$value);
         }
-
         $this->_smarty->assign('this',$view);
         $this->_smarty->assign('app',Ling::$app);
         return $this->_smarty->fetch($file);
